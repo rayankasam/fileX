@@ -12,23 +12,27 @@ use crate::get_files::get_files;
 
 #[derive(Parser)]
 struct Arguments {
+    /// part of file names to be targeted
     pattern: String,
-    add: String,
+    /// Path of directory to act on
     path: std::path::PathBuf,
+    /// Text to add to the file name (Optional)
+    #[arg(short,long)]
+    add: Option<String>,
+    /// If the text 'add' should become the suffix, as opposed to prefix
     #[arg(short,long)]
     suffix: bool,
+    /// Update file extensions of these file to what extension (Optional)
+    #[arg(short, long)]
+    extension: Option<String>,
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Arguments = Arguments::parse();
     let files: Vec<PathBuf> = filter_files(get_files(&args.path)?,&args.pattern);
     // Renames each file to the updated version
     for file in files.iter() {
-        let updated_path = update_path(file.as_path(), &new_file_name(file.file_name().unwrap().to_str().unwrap(), &args.add, args.suffix));
-        match fs::rename(file.as_path() ,updated_path) {
-            Ok(_) => (),
-            Err(err) => return Err(Box::new(err))
-        }
-
+        let updated_path = update_path(file.as_path(), &new_file_name(file.file_name().unwrap().to_str().unwrap(), &args.add, args.suffix), &args.extension);
+        fs::rename(file.as_path() ,updated_path)?;
     }
     Ok(())
 }
