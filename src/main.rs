@@ -34,10 +34,16 @@ struct Arguments {
     /// Recursively searches sub-sirectories
     #[arg(short, long)]
     recurse: bool,
+    /// Depth of directories searched from path
+    #[arg(short, long)]
+    depth: Option<usize>,
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Arguments = Arguments::parse();
-    let files: Vec<PathBuf> = filter_files(get_files(&args.path, args.recurse)?, &args.pattern);
+    let files: Vec<PathBuf> = filter_files(
+        get_files(&args.path, args.recurse, args.depth)?,
+        &args.pattern,
+    );
     if args.files {
         files.iter().for_each(|file| println!("{:?}", file));
     }
