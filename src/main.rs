@@ -9,13 +9,14 @@ use crate::update_path::update_path;
 
 use anyhow::{Context, Result};
 use clap::Parser;
+use regex::Regex;
 use std::fs;
 use std::path::PathBuf;
 
 #[derive(Parser)]
 struct Arguments {
-    /// part of file names to be targeted
-    pattern: String,
+    /// Regex pattern for files
+    pattern: Regex,
     /// Path of directory to act on
     path: std::path::PathBuf,
     /// Text to add to the file name (Optional)
