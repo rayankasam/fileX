@@ -31,10 +31,13 @@ struct Arguments {
     /// Show all the files the pattern finds
     #[arg(short, long)]
     files: bool,
+    /// Recursively searches sub-sirectories
+    #[arg(short, long)]
+    recurse: bool,
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Arguments = Arguments::parse();
-    let files: Vec<PathBuf> = filter_files(get_files(&args.path)?, &args.pattern);
+    let files: Vec<PathBuf> = filter_files(get_files(&args.path, args.recurse)?, &args.pattern);
     if args.files {
         files.iter().for_each(|file| println!("{:?}", file));
     }

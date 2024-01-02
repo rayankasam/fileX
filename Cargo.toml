@@ -9,3 +9,4 @@ edition = "2021"
 anyhow = { version = "1.0.79" }
 clap = { version = "4.0", features = ["derive"] }
 regex = { version = "1.10.2" }
+walkdir = { version = "2.4.0" }
