@@ -28,10 +28,16 @@ struct Arguments {
     /// Update file extensions of these file to what extension (Optional)
     #[arg(short, long)]
     extension: Option<String>,
+    /// Show all the files the pattern finds
+    #[arg(short, long)]
+    files: bool,
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Arguments = Arguments::parse();
     let files: Vec<PathBuf> = filter_files(get_files(&args.path)?, &args.pattern);
+    if args.files {
+        files.iter().for_each(|file| println!("{:?}", file));
+    }
     // Renames each file to the updated version
     for file in files.iter() {
         let updated_path = update_path(
