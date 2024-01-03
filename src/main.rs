@@ -15,17 +15,17 @@ use std::path::PathBuf;
 
 #[derive(Parser)]
 struct Arguments {
-    /// Regex pattern for files
-    pattern: Regex,
     /// Path of directory to act on
     path: std::path::PathBuf,
-    /// Text to add to the file name (Optional)
+    /// Regex pattern for files
+    pattern: Regex,
+    /// Text to add to the file name
     #[arg(short, long)]
     add: Option<String>,
     /// If the text 'add' should become the suffix, as opposed to prefix
     #[arg(short, long)]
     suffix: bool,
-    /// Update file extensions of these file to what extension (Optional)
+    /// Update file extensions of these file to what extension
     #[arg(short, long)]
     extension: Option<String>,
     /// Show all the files the pattern finds
@@ -46,6 +46,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     if args.files {
         files.iter().for_each(|file| println!("{:?}", file));
+    }
+    // If there are no changes to be made, it doesn't rename anything
+    if args.add.is_none() && args.extension.is_none() {
+        return Ok(());
     }
     // Renames each file to the updated version
     for file in files.iter() {

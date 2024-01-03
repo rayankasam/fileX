@@ -8,13 +8,10 @@ pub fn get_files(
     depth: Option<usize>,
 ) -> Result<Vec<PathBuf>, Box<dyn std::error::Error>> {
     Ok(WalkDir::new(dir)
-        .max_depth(if recurse {
-            match depth {
-                Some(a) => a,
-                None => std::usize::MAX,
-            }
-        } else {
-            1
+        .max_depth(match (recurse, depth) {
+            (false, _) => 1,
+            (_, Some(a)) => a,
+            (_, None) => std::usize::MAX,
         })
         .into_iter()
         .filter_map(|entry| Some(entry.ok()?.path().to_path_buf()))
